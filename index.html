@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeAutoTrader</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header logo">
+            <a href="index.html" >DeAutoTrader</a>
+        </div>
+
+        <nav class="header">
+            <ul>
+                <li><a href="index.html" class="hidden-home">Home</a></li>
+                <li><a href="Analysis.html">Analysis</a></li>
+            </ul>
+        </nav>
+
+
+        <div class="header user-info">
+            <img src="https://avatars.githubusercontent.com/u/9919?s=40" alt="Avatar" />
+            <span class="hidden-username">Anonymous</span>
+        </div>
+
+    </header>
+
+    <main>
+        <div id="dashboard" class="dashboard"></div>
+        <!-- Add your analysis content here -->
+
+        <section class="dashboard">
+
+
+        </section>
+
+        <div class="trade-top">
+        <p>Trade History</p>
+        <div class="filter-group">
+            <label for="time-filter" class="visually-hidden">Filter by Time</label>
+            <select id="time-filter" title="Filter Trades by Time">
+            <option value="all">All</option>
+            <option value="yesterday">Yesterday</option>
+            <option value="last-week">Last Week</option>
+            <option value="last-month">Last Month</option>
+            <option value="custom">Custom</option>
+            </select>
+
+            <input type="datetime-local" id="start-date" style="display: none;" />
+            <input type="datetime-local" id="end-date" style="display: none;" />
+            <button id="apply-custom" style="display: none;">Apply</button>
+        </div>
+        </div>
+
+        
+        <div class="table-container">
+        <table class="trade_table">
+            <thead>
+            <tr>
+                <th class="col-entime">Entry Time</th>
+                <th class="col-enprice">Entry Price</th>
+                <th class="col-type">Type</th>
+                <th class="col-extime">Exit Time</th>
+                <th class="col-exprice">Exit Price</th>
+                <th class="col-netprofit">net Profit</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 DeAutoTrader. All rights reserved.</p>
+    </footer>
+    
+
+    <script type="" src="style.js"></script>
+</body>
+</html>

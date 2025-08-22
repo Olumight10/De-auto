@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>DeAutoTrader - Analysis</title>
+  <style>
+    :root {
+      --bg-color: #0d1117;
+      --text-color: #c9d1d9;
+      --card-bg: #161b22;
+      --border-color: #30363d;
+      --accent-color: #58a6ff;
+    }
+
+    [data-theme="light"] {
+      --bg-color: #f4f4f4;
+      --text-color: #222;
+      --card-bg: #ffffff;
+      --border-color: #ddd;
+      --accent-color: #007bff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .top-bar {
+      background: var(--card-bg);
+      padding: 1em 2em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .logo {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: var(--accent-color);
+    }
+
+    .nav-links a {
+      margin: 0 1em;
+      text-decoration: none;
+      color: var(--text-color);
+      font-weight: 500;
+    }
+
+    .nav-links a:hover {
+      text-decoration: underline;
+      color: var(--accent-color);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75em;
+    }
+
+    .user-info img {
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--accent-color);
+      padding: 0.4em 0.8em;
+      color: var(--accent-color);
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 2em auto;
+      padding: 0 1em;
+    }
+
+    .trader-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.2em 1.5em;
+      margin-bottom: 2em;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .trader-box h2 {
+      margin-top: 0;
+      margin-bottom: 0.5em;
+      color: var(--accent-color);
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5em;
+      margin-bottom: 2em;
+    }
+
+    .kpi-card, .chart-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 1.5em;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+    }
+
+    .kpi-label {
+      font-weight: 600;
+      font-size: 1.1em;
+      opacity: 0.8;
+    }
+
+    .kpi-value {
+      font-size: 2.2em;
+      font-weight: 700;
+      color: var(--accent-color);
+      margin-top: 0.3em;
+    }
+
+    .chart-card canvas {
+      width: 100%;
+      height: 280px;
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--accent-color);
+      margin-bottom: 1em;
+    }
+
+    @media (min-width: 900px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-auto-rows: auto;
+        grid-template-areas: 
+          "kpi1 kpi2"
+          "kpi3 kpi4"
+          "chart chart";
+      }
+
+      .kpi-card:nth-child(1) { grid-area: kpi1; }
+      .kpi-card:nth-child(2) { grid-area: kpi2; }
+      .kpi-card:nth-child(3) { grid-area: kpi3; }
+      .kpi-card:nth-child(4) { grid-area: kpi4; }
+      .chart-card { grid-area: chart; }
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <div class="top-bar">
+    <div class="logo">DeAutoTrader</div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="analysis.html">Analysis</a>
+    </div>
+    <div class="user-info">
+      <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+      <img src="https://avatars.githubusercontent.com/u/9919?s=40" alt="Avatar" />
+      <span>Anonymous</span>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1>Trade Analysis</h1>
+
+    <div class="trader-box">
+      <h2>Trader: Olumighty</h2>
+      <p>Status: <strong>Active</strong></p>
+      <p>Strategy: Mean Reversion + Volume Spike</p>
+      <p>Performance Period: Last 7 Days</p>
+    </div>
+
+    <div class="dashboard-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Number of Trades</div>
+        <div class="kpi-value" id="numTrades">-</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Total Net Profit</div>
+        <div class="kpi-value" id="totalProfit">-</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Number of Wins</div>
+        <div class="kpi-value" id="numWins">-</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Number of Losses</div>
+        <div class="kpi-value" id="numLosses">-</div>
+      </div>
+
+      <div class="chart-card">
+        <canvas id="profitChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+<script>
+
+
+
+    const profits = trades.map(t =>
+      t.type === 'BUY' 
+        ? t.exitPrice - t.entryPrice 
+        : t.entryPrice - t.exitPrice
+    );
+    const totalTrades = trades.length;
+    const totalProfit = profits.reduce((a, b) => a + b, 0);
+    const numWins = profits.filter(p => p > 0).length;
+    const numLosses = profits.filter(p => p <= 0).length;
+
+    document.getElementById('numTrades').textContent = totalTrades;
+    document.getElementById('totalProfit').textContent = totalProfit.toFixed(2);
+    document.getElementById('numWins').textContent = numWins;
+    document.getElementById('numLosses').textContent = numLosses;
+
+    const sortedTrades = trades.slice().sort((a, b) => new Date(a.exitTime) - new Date(b.exitTime));
+    const labels = [], cumulativeProfits = [];
+    let cumulative = 0;
+
+    for (const trade of sortedTrades) {
+      cumulative += trade.exitPrice - trade.entryPrice;
+      labels.push(new Date(trade.exitTime).toISOString().split('T')[0]);
+      cumulativeProfits.push(cumulative.toFixed(2));
+    }
+
+    const ctx = document.getElementById('profitChart').getContext('2d');
+    const profitChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Cumulative Net Profit',
+          data: cumulativeProfits,
+          fill: true,
+          backgroundColor: 'rgba(88, 166, 255, 0.1)',
+          borderColor: getComputedStyle(document.body).getPropertyValue('--accent-color').trim(),
+          borderWidth: 3,
+          tension: 0.3,
+          pointRadius: 5,
+          pointBackgroundColor: getComputedStyle(document.body).getPropertyValue('--accent-color').trim()
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: {
+            ticks: { color: getComputedStyle(document.body).getPropertyValue('--text-color').trim() },
+            grid: { color: getComputedStyle(document.body).getPropertyValue('--border-color').trim() }
+          },
+          y: {
+            ticks: { color: getComputedStyle(document.body).getPropertyValue('--text-color').trim() },
+            grid: { color: getComputedStyle(document.body).getPropertyValue('--border-color').trim() }
+          }
+        },
+        plugins: {
+          legend: {
+            labels: { color: getComputedStyle(document.body).getPropertyValue('--text-color').trim() }
+          }
+        }
+      }
+    });
+
+    function toggleTheme() {
+      const body = document.body;
+      body.dataset.theme = body.dataset.theme === 'light' ? 'dark' : 'light';
+      profitChart.options.scales.x.ticks.color = getComputedStyle(body).getPropertyValue('--text-color').trim();
+      profitChart.options.scales.y.ticks.color = getComputedStyle(body).getPropertyValue('--text-color').trim();
+      profitChart.data.datasets[0].borderColor = getComputedStyle(body).getPropertyValue('--accent-color').trim();
+      profitChart.data.datasets[0].pointBackgroundColor = getComputedStyle(body).getPropertyValue('--accent-color').trim();
+      profitChart.update();
+    }
+  </script>
+
+</body>
+</html>
